@@ -1,0 +1,19 @@
+{
+    "name": "samrm/icons-field",
+    "description": "An icon select-field for kirby-3",
+    "license": "MIT",
+    "type": "kirby-plugin",
+    "authors": [
+        {
+            "name": "Samuel Rivers-Moore",
+            "email": "samuel.riversmoore@gmail.com"
+        }
+    ],
+    "require": {
+        "getkirby/composer-installer": "^1.1"
+    },
+    "extra": {
+        "installer-name": "icons-field"
+    },
+    "minimum-stability": "beta"
+}
