@@ -9,7 +9,7 @@ Kirby::plugin('samrm/icons-field', [
             ],
             'computed' => [
                 'options' => function () {
-                    $data = Data::read(__DIR__ . "/src/assets/Fork-Awesome/src/icons/icons.yml");
+                    $data = Data::read(__DIR__ . "/src/assets/icons.yml");
                     return $this->formatIconsData($data['icons']);
                 },
                 'default' => function () {

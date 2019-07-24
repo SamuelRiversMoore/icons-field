@@ -142,7 +142,6 @@ export default {
 			}
 		},
 		onInput() {
-			console.warn(this.state.value);
 			this.$emit("input", this.state.value);
 		},
 		// onInvalid() {

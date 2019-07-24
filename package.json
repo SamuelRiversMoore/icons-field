@@ -33,7 +33,7 @@
     "uglify-js": "^3.4.7",
     "vue": "^2.5.17",
     "vueify": "^9.4.1",
-    "watchify": "^3.11.0"
+    "watchify": "^3.11.1"
   },
   "dependencies": {
     "fs": "^0.0.1-security",
