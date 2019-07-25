@@ -21,5 +21,5 @@ export default {
 
 <style lang="scss">
 @import "../assets/css/styles.scss";
-@import "../media/plugins/samrm/icons-field/css/fork-awesome.min.css";
+@import "./samrm/icons-field/css/fork-awesome.min.css";
 </style>
