@@ -165,7 +165,7 @@ export default {
 			this.$refs.dropdown.toggle();
 		},
 		onScroll({ target: { scrollTop, clientHeight, scrollHeight } }) {
-			if (scrollTop + clientHeight >= scrollHeight - 26 && this.items_length > this.filtered_options.length) {
+			if (scrollTop + clientHeight >= scrollHeight - 26 && this.items_length < this.filtered_options.length) {
 				this.items_length += 50;
 			}
 		},
