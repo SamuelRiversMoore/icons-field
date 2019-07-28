@@ -71,7 +71,7 @@ export default {
 			const regex = new RegExp(`(${RegExp.escape(this.q)})`, "ig");
 			return this.options
 				.filter(option => {
-					return option.text.match(regex) || option.value.match(regex);
+					return option.text.match(regex) || option.value.match(regex) || option.aliases.match(regex);
 				})
 				.map(option => {
 					return {
