@@ -1,5 +1,8 @@
 <?php
 Kirby::plugin('samrm/icons-field', [
+    'options' => [
+        'cache' => true
+    ],
     'fields' => [
         'icons' => [
             'props' => [
@@ -9,8 +12,7 @@ Kirby::plugin('samrm/icons-field', [
             ],
             'computed' => [
                 'options' => function () {
-                    $data = Data::read(__DIR__ . "/src/assets/icons.yml");
-                    return $this->formatIconsData($data['icons']);
+                    return $this->getIconsData();
                 },
                 'default' => function () {
                     return $this->default;
@@ -23,14 +25,26 @@ Kirby::plugin('samrm/icons-field', [
                 },
             ],
             'methods' => [
-                'formatIconsData' => function ($icons) {
+                'getIconsData' => function () {
+                    $cache = kirby()->cache('samrm.icons-field');
+                    $icons  = $cache->get('icons');
+                    if ($icons == null) {
+                        $data = Data::read(__DIR__ . "/src/assets/icons.yml");
+                        $icons = $this->formatDataAsOptions($data['icons']);
+                        $cache->set('icons', $icons);
+                    }
+                    return $icons;
+                },
+                'formatDataAsOptions' => function ($icons) {
                     $options = array();
                     foreach ($icons as $icon) {
                         if (array_key_exists('categories', $icon) && $this->hasIntersections($icon['categories'], $this->categories)) {
+                            $filters = array_key_exists('filter', $icon) && is_array($icon['filter']) ? $icon['filter'] : [];
+                            $aliases = array_key_exists('aliases', $icon) && is_array($icon['aliases']) ? $icon['aliases'] : [];
                             $options[] = [
                                 'text' => $icon['name'],
                                 'value' => $icon['id'],
-                                'alias' => array_key_exists('filter', $icon) ? $icon['filter'] : [],
+                                'aliases' => implode(" ", array_merge($aliases, $filters)),
                                 'categories' => array_key_exists('categories', $icon) ? $icon['categories'] : []
                             ];
                         }
