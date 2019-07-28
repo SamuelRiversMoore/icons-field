@@ -1,6 +1,6 @@
 {
   "name": "kirby-icons-field",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "An icon select-field for kirby-3",
   "main": "index.js",
   "author": "Samuel RIvers-Moore",
