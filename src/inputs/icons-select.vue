@@ -12,19 +12,25 @@
 				<input ref="search" v-model="q" />
 			</k-dropdown-item>
 
-			<div class="k-multiselect-options">
-				<k-dropdown-item v-for="option in filtered" :key="option.value" @click.stop.native="select(option)" @keydown.native.enter.prevent="select(option)" @keydown.native.space.prevent="select(option)">
-					<span v-if="option.value" class="dropdown-item-icon fa" :class="'fa-' + option.value"></span>
-					<span v-html="option.display" />
-					<span class="k-multiselect-value" v-html="option.info" />
-				</k-dropdown-item>
+			<div class="k-multiselect-options" @scroll="onScroll">
+				<template v-if="sliced_options.length">
+					<k-dropdown-item v-for="option in sliced_options" :key="option.value" @click.stop.native="select(option)" @keydown.native.enter.prevent="select(option)" @keydown.native.space.prevent="select(option)">
+						<span v-if="option.value" class="dropdown-item-icon fa" :class="'fa-' + option.value"></span>
+						<span v-html="option.display" />
+						<span class="k-multiselect-value" v-html="option.info" />
+					</k-dropdown-item>
+				</template>
+				<template v-else>
+					<div class="k-dropdown-item no-result">
+						<i>No result for "{{ q }}"</i>
+					</div>
+				</template>
 			</div>
 		</k-dropdown-content>
 	</div>
 </template>
 
 <script>
-// import "@/helpers/regex.js";
 import { required, minLength, maxLength } from "vuelidate/lib/validators";
 export default {
 	inheritAttrs: false,
@@ -55,12 +61,13 @@ export default {
 	},
 	data() {
 		return {
+			items_length: 100,
 			state: null,
 			q: null
 		};
 	},
 	computed: {
-		filtered() {
+		filtered_options() {
 			if (this.q === null) {
 				return this.options.map(option => ({
 					...option,
@@ -80,6 +87,9 @@ export default {
 						info: option.value.replace(regex, "<b>$1</b>")
 					};
 				});
+		},
+		sliced_options() {
+			return this.filtered_options.slice(0, this.items_length);
 		}
 	},
 	watch: {
@@ -144,9 +154,6 @@ export default {
 		onInput() {
 			this.$emit("input", this.state.value);
 		},
-		// onInvalid() {
-		// 	this.$emit("invalid", this.$v.$invalid, this.$v);
-		// },
 		onOpen() {
 			this.$nextTick(() => {
 				if (this.$refs.search) {
@@ -157,23 +164,17 @@ export default {
 		onClick() {
 			this.$refs.dropdown.toggle();
 		},
-		select(option) {
-			if (this.isSelected(option)) {
-				//this.remove(option);
-			} else {
-				this.state = option;
-				this.close();
-				this.onInput();
+		onScroll({ target: { scrollTop, clientHeight, scrollHeight } }) {
+			if (scrollTop + clientHeight >= scrollHeight - 26 && this.items_length > this.filtered_options.length) {
+				this.items_length += 50;
 			}
+		},
+		select(option) {
+			this.state = option;
+			this.close();
+			this.onInput();
 		}
 	}
-	// validations() {
-	// 	return {
-	// 		state: {
-	// 			required: this.required ? required : true
-	// 		}
-	// 	};
-	// }
 };
 </script>
 
@@ -195,61 +196,7 @@ export default {
 .dropdown-item-icon {
 	margin-right: 0.5em;
 }
-// .k-multiselect-input .k-sortable-ghost {
-// 	background: $color-focus;
-// }
-// .k-multiselect-input .k-dropdown-content {
-// 	width: 100%;
-// }
-// .k-multiselect-search {
-// 	margin-top: 0 !important;
-// 	color: $color-white;
-// 	background: $color-dark;
-// 	border-bottom: 1px dashed rgba($color-white, 0.2);
-// 	> .k-button-text {
-// 		flex: 1;
-// 	}
-// 	input {
-// 		width: 100%;
-// 		color: $color-white;
-// 		background: none;
-// 		border: none;
-// 		outline: none;
-// 		padding: 0.25rem 0;
-// 		font: inherit;
-// 	}
-// }
-// .k-multiselect-options {
-// 	position: relative;
-// 	max-height: 240px;
-// 	overflow-y: scroll;
-// 	padding: 0.5rem 0;
-// }
-// .k-multiselect-option {
-// 	position: relative;
-// 	&.selected {
-// 		color: $color-positive-on-dark;
-// 	}
-// 	&.disabled:not(.selected) .k-icon {
-// 		opacity: 0;
-// 	}
-// 	b {
-// 		color: $color-focus-on-dark;
-// 		font-weight: 700;
-// 	}
-// }
-// .k-multiselect-value {
-// 	color: $color-light-grey;
-// 	margin-left: 0.25rem;
-// 	&::before {
-// 		content: " (";
-// 	}
-// 	&::after {
-// 		content: ")";
-// 	}
-// }
-// .k-multiselect-input[data-layout="list"] .k-tag {
-// 	width: 100%;
-// 	margin-right: 0 !important;
-// }
+.k-dropdown-item.no-result {
+	opacity: 0.5;
+}
 </style>
